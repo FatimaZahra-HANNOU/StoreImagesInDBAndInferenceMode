@@ -11,17 +11,23 @@
                         Display mode
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item">Individual</a></li>
-                        <li><a class="dropdown-item">By category</a></li>
+                        <li><a class="dropdown-item" @click="showByCategory(false)">{{ ALL_MODE }}</a></li>
+                        <li><a class="dropdown-item" @click="showByCategory(true)">{{ BY_CATEGORY_MODE }}</a></li>
                     </ul>
                 </div>
             </div>
         </div>
         
+
         <div class="my-2">
-            <div class="row">
+            <div class="row" v-if="displayImagesMode === ALL_MODE">
                 <div class="col-md-3 my-4" v-for="carRim in carRims" :key="carRim.id">
                     <CarRimBox :carRim="carRim" />
+                </div>
+            </div>
+            <div v-else>
+                <div class="col-md-3 my-4" v-for="carRimByCategory in carRimsByCategory" :key="carRimByCategory.id">
+                    <CarRimBox :carRim="carRimByCategory" />
                 </div>
             </div>
         </div>
@@ -40,11 +46,16 @@
         data() {
             return {
                 carRims: [],
-                displayImagesMode: 'Individual'
+                carRimsByCategory: [],
+                ALL_MODE: 'All',
+                BY_CATEGORY_MODE: 'By category',
+                displayImagesMode: null,
             }
         },
         mounted() {
+            this.displayImagesMode = this.ALL_MODE;
             this.getCarRims();
+            this.getCarRimsByCategory();
             document.title = 'Gallery'
         },
         methods: {
@@ -57,6 +68,23 @@
                 .catch(error => {
                     console.log(error);
                 })
+            },
+            async getCarRimsByCategory() {
+                await axios
+                .get('/api/v1/storedCarRimTypesByCategory/')
+                .then(response => {
+                    this.carRimsByCategory = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            },
+            showByCategory(canShowByCategory) {
+                if (canShowByCategory) {
+                    this.displayImagesMode = this.BY_CATEGORY_MODE;
+                } else {
+                    this.displayImagesMode = this.ALL_MODE;
+                }
             }
         }
     }

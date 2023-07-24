@@ -7,7 +7,8 @@
                 class="progress"
                 role="progressbar"
                 aria-label="Animated striped example"
-                :aria-valuenow="progress" aria-valuemin="0"
+                :aria-valuenow="progress"
+                aria-valuemin="0"
                 aria-valuemax="100"
             >
                 <div class="progress-bar progress-bar-striped progress-bar-animated" :style="{ width: progress + '%' }"></div>

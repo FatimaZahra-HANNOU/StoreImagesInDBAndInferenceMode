@@ -23,3 +23,21 @@ class CarRimType(models.Model):
     class Meta:
         ordering = ['category']
         
+        
+class CarRimTypeByCategory(models.Model):
+    category = models.CharField(max_length=3)
+    image = models.ImageField(null=False, upload_to=getImagePath)
+    count = models.IntegerField()
+    
+
+    def __self__(self):
+        return self.category
+
+    
+    def getImage(self):
+        return f'http://localhost:8000{self.image.url}' if self.image else ''
+    
+    
+    class Meta:
+        ordering = ['category']
+        

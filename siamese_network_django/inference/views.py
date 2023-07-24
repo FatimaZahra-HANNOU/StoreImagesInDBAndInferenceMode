@@ -1,7 +1,10 @@
 from django.http import JsonResponse
 
-from .models import CarRimType
-from .serializers import CarRimTypeSerializer
+from django.db.models import F, Count, OuterRef, Subquery
+from django.db.models.functions import Coalesce
+
+from .models import CarRimType, CarRimTypeByCategory
+from .serializers import CarRimTypeSerializer, CarRimTypeByCategorySerializer
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -19,6 +22,18 @@ class storedCarRimTypes(APIView):
     def get(self, request, format=None):
         carRims = CarRimType.objects.all()
         serializer = CarRimTypeSerializer(carRims, many=True)
+        return Response(serializer.data)
+    
+    
+class storedCarRimTypesByCategory(APIView):
+    def get(self, request, format=None):
+        subquery = CarRimType.objects.filter(category=OuterRef('category')).order_by('-id')
+        carRimsByCategory = CarRimType.objects.values('category').annotate(
+            image=Coalesce(Subquery(subquery.values('image')[:1]), F('image')),
+            count=Count('id')
+        )
+        
+        serializer = CarRimTypeByCategorySerializer(carRimsByCategory, many=True)
         return Response(serializer.data)
 
 

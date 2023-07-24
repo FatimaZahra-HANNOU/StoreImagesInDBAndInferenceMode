@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CarRimType
+from .models import CarRimType, CarRimTypeByCategory
 
 
 class CarRimTypeSerializer(serializers.ModelSerializer):
@@ -9,5 +9,16 @@ class CarRimTypeSerializer(serializers.ModelSerializer):
             "id",
             "category",
             "getImage",
+        )
+        
+        
+class CarRimTypeByCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CarRimTypeByCategory
+        fields = (
+            "id",
+            "category",
+            "getImage",
+            "count"
         )
         
