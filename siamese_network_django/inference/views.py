@@ -33,6 +33,9 @@ class storedCarRimTypesByCategory(APIView):
             count=Count('id')
         )
         
+        for item in carRimsByCategory:
+            item['image'] = f'http://localhost:8000/media/{item["image"]}'
+        
         serializer = CarRimTypeByCategorySerializer(carRimsByCategory, many=True)
         return Response(serializer.data)
 

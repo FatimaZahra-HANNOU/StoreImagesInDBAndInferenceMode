@@ -12,13 +12,13 @@ class CarRimTypeSerializer(serializers.ModelSerializer):
         )
         
         
-class CarRimTypeByCategorySerializer(serializers.ModelSerializer):
+class CarRimTypeByCategorySerializer(serializers.ModelSerializer):    
     class Meta:
         model = CarRimTypeByCategory
         fields = (
             "id",
             "category",
-            "getImage",
-            "count"
+            "count",
+            "image",
         )
         

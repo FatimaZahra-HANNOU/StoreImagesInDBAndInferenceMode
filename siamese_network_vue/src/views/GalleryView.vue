@@ -3,7 +3,12 @@
         <h2 class="display-6 mt-5">Gallery</h2>
         <div class="row justify-content-between">
             <div class="col-8">
-                <p class="lead">Total number of images: {{ carRims.length }}</p>
+                <p class="lead" v-if="displayImagesMode === ALL_MODE">
+                    Total number of images: {{ carRims.length }}
+                </p>
+                <p class="lead" v-else>
+                    Total number of types: {{ carRimsByCategory.length }}
+                </p>
             </div>
             <div class="col-4 d-flex justify-content-end">
                 <div class="dropdown">
@@ -20,14 +25,14 @@
         
 
         <div class="my-2">
-            <div class="row" v-if="displayImagesMode === ALL_MODE">
+            <div class="row" v-show="displayImagesMode === ALL_MODE">
                 <div class="col-md-3 my-4" v-for="carRim in carRims" :key="carRim.id">
                     <CarRimBox :carRim="carRim" />
                 </div>
             </div>
-            <div v-else>
+            <div class="row" v-show="displayImagesMode === BY_CATEGORY_MODE">
                 <div class="col-md-3 my-4" v-for="carRimByCategory in carRimsByCategory" :key="carRimByCategory.id">
-                    <CarRimBox :carRim="carRimByCategory" />
+                    <CarRimTypeBox :carRimType="carRimByCategory" />
                 </div>
             </div>
         </div>
@@ -37,11 +42,13 @@
 <script>
     import axios from 'axios'
     import CarRimBox from '@/components/CarRimBox.vue'
+    import CarRimTypeBox from '@/components/CarRimTypeBox.vue'
     
     export default {
         name: 'GalleryView',
         components: {
-            CarRimBox
+            CarRimBox,
+            CarRimTypeBox
         },
         data() {
             return {
