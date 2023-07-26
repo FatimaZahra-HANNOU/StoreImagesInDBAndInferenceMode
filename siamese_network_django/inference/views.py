@@ -17,6 +17,8 @@ from PIL import Image
 from .predicter import predict
 import torchvision.transforms as transforms
 
+import os
+
 
 class storedCarRimTypes(APIView):
     def get(self, request, format=None):
@@ -43,7 +45,9 @@ class storedCarRimTypesByCategory(APIView):
 @api_view(['POST'])
 def inference(request):
     image = getPilImage(request)
-    predictedClass, predictedClassImage = predict(image)
+    modelName = request.POST['model']
+    predictedClass, predictedClassImage = predict(image, modelName)
+    
     return JsonResponse({
         'predictedClass': predictedClass + 1,
         'predictedClassImage': getPredictedImageURI(predictedClassImage),
@@ -65,3 +69,9 @@ def getPredictedImageURI(imageTensor):
     data_uri = base64.b64encode(buffered.getvalue()).decode()
     
     return f"data:image/jpeg;base64,{data_uri}"
+
+
+def getModels(request):
+    # get default project directory using os and get all the files in the ml_model folder
+    modelsDir = os.path.join(os.getcwd(), 'inference', 'ml_model')
+    return JsonResponse({'models': os.listdir(modelsDir)})

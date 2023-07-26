@@ -10,11 +10,13 @@ import numpy as np
 
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-import json
+
+import os
 
 
-def predict(testImage):
-    modelPath = "/home/imad/Projects/AI_Inside_Stage/Siamese_network/siamese_network_django/inference/ml_model/siamese_net.pth"
+def predict(testImage, modelName):
+    modelsDir = os.path.join(os.getcwd(), 'inference', 'ml_model')
+    modelPath = os.path.join(modelsDir, modelName)
     model = loadModel(modelPath)
     
     transform = transforms.Compose([
@@ -49,7 +51,7 @@ def loadModel(path):
 
 
 def getTrainingdata(transform):
-    trainingDirectory = "/home/imad/Projects/AI_Inside_Stage/Siamese_network/siamese_network_django/media/images"
+    trainingDirectory = os.path.join(os.getcwd(), 'media', 'images')
     trainingDataset = dset.ImageFolder(root=trainingDirectory, transform=transform)
     return DataLoader(trainingDataset, batch_size=1, shuffle=False, num_workers=2, pin_memory=True)
 

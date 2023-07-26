@@ -60,10 +60,10 @@
             }
         },
         mounted() {
+            document.title = 'Gallery'
             this.displayImagesMode = this.ALL_MODE;
             this.getCarRims();
             this.getCarRimsByCategory();
-            document.title = 'Gallery'
         },
         methods: {
             async getCarRims() {

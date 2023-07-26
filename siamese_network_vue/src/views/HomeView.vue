@@ -8,6 +8,12 @@
     export default {
         name: 'HomeView',
         components: {
-        }
+        },
+        data() {
+
+        },
+        mounted() {
+            document.title = 'Home'
+        },
     }
 </script>
