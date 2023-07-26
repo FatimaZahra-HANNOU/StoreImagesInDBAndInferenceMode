@@ -73,7 +73,6 @@ def getPredictedImageURI(imageTensor):
 
 
 def getModels(request):
-    # get default project directory using os and get all the files in the ml_model folder
     modelsDir = os.path.join(os.getcwd(), 'inference', 'ml_model')
     return JsonResponse({'models': os.listdir(modelsDir)})
 
@@ -81,7 +80,36 @@ def getModels(request):
 @api_view(['POST'])
 def search(request):
     query = json.loads(request.body)['query']
-    carRims = CarRimType.objects.filter(Q(category__icontains=query))
+    carRims = CarRimType.objects.filter(Q(category__icontains=query) | Q(id=query))
     serializer = CarRimTypeSerializer(carRims, many=True)
     
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+def updateCarRim(request):
+    updatedCarRim = json.loads(request.body)
+    oldCarRim = CarRimType.objects.get(id=updatedCarRim['id'])
+    
+    oldCarRim.category = str(updatedCarRim['category']).zfill(3)
+    oldCarRim.save()
+    
+    return JsonResponse({'message': 'The object was successfully updated!'})
+
+
+@api_view(['POST'])
+def deleteCarRim(request):
+    data = json.loads(request.body)
+    oldCarRim = CarRimType.objects.get(id=data['id'])
+    
+    deleteAssociatedImageFile(imageURL=data['image'])
+    oldCarRim.delete()
+    
+    return JsonResponse({'message': 'The object was successfully deleted!'})
+
+
+def deleteAssociatedImageFile(imageURL):
+    mediaFolder = 'media'
+    pathToImage = os.path.join(os.getcwd(), mediaFolder, *imageURL.split(mediaFolder)[-1].split('/'))
+    
+    os.remove(pathToImage)

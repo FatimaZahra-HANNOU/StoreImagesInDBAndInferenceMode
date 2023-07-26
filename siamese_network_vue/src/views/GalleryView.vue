@@ -19,6 +19,7 @@
                         aria-label="Recipient's username"
                         aria-describedby="button-addon2"
                         v-model="searchQuery"
+                        @keyup.enter="searchForCarRims"
                     >
                     <button class="btn btn-primary" type="button" id="button-addon2" @click="searchForCarRims">Search</button>
                 </div>

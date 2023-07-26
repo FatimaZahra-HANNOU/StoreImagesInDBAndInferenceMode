@@ -11,6 +11,13 @@
     name: 'App',
     components: {
       NavBar
+    },
+    data() {
+      return {
+      }
+    },
+    beforeCreate() {
+      this.$store.commit('initializeStore');
     }
   }
 </script>

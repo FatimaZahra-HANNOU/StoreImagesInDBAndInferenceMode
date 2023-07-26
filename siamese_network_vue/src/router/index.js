@@ -3,6 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import GalleryView from '../views/GalleryView.vue'
 import IdentifyView from '../views/IdentifyView.vue'
+import ImageDetailsView from '../views/ImageDetailsView.vue'
+
 
 const routes = [
   {
@@ -20,6 +22,11 @@ const routes = [
     name: 'identify',
     component: IdentifyView
   },
+  {
+    path: '/imageDetails',
+    name: 'imageDetails',
+    component: ImageDetailsView
+  }
 ]
 
 const router = createRouter({
