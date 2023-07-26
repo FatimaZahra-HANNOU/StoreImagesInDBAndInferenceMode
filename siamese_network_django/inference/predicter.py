@@ -57,6 +57,7 @@ def getTrainingdata(transform):
 def sendProgressToVue(currentIteration, totalIterations):
     progressValue = int((currentIteration / totalIterations) * 100)
     channel_layer = get_channel_layer()
+    
     async_to_sync(channel_layer.group_send)("progress_bar", {
         'type': 'send_progress',
         'progress': progressValue,
