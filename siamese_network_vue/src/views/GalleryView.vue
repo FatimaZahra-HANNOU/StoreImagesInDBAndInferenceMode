@@ -2,7 +2,7 @@
     <section class="container">
         <h2 class="display-6 mt-5">Gallery</h2>
         <div class="row justify-content-between">
-            <div class="col-8">
+            <div class="col-7">
                 <p class="lead" v-if="displayImagesMode === ALL_MODE">
                     Total number of images: {{ carRims.length }}
                 </p>
@@ -10,7 +10,19 @@
                     Total number of types: {{ carRimsByCategory.length }}
                 </p>
             </div>
-            <div class="col-4 d-flex justify-content-end">
+            <div class="col-5 d-flex justify-content-end">
+                <div class="input-group mb-3 mx-3">
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Car rim type"
+                        aria-label="Recipient's username"
+                        aria-describedby="button-addon2"
+                        v-model="searchQuery"
+                    >
+                    <button class="btn btn-primary" type="button" id="button-addon2" @click="searchForCarRims">Search</button>
+                </div>
+
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Display mode
@@ -57,6 +69,7 @@
                 ALL_MODE: 'All',
                 BY_CATEGORY_MODE: 'By category',
                 displayImagesMode: null,
+                searchQuery: ''
             }
         },
         mounted() {
@@ -92,6 +105,24 @@
                 } else {
                     this.displayImagesMode = this.ALL_MODE;
                 }
+            },
+            async searchForCarRims() {
+                const data = JSON.stringify({
+                    query: this.searchQuery
+                });
+                await axios
+                .post('/api/v1/search/', data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': 'csrftoken'
+                    }
+                })
+                .then(response => {
+                    this.carRims = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                })
             }
         }
     }

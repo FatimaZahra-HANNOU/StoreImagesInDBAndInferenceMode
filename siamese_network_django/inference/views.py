@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 
-from django.db.models import F, Count, OuterRef, Subquery
+from django.db.models import F, Q, Count, OuterRef, Subquery
 from django.db.models.functions import Coalesce
 
 from .models import CarRimType, CarRimTypeByCategory
@@ -18,6 +18,7 @@ from .predicter import predict
 import torchvision.transforms as transforms
 
 import os
+import json
 
 
 class storedCarRimTypes(APIView):
@@ -75,3 +76,12 @@ def getModels(request):
     # get default project directory using os and get all the files in the ml_model folder
     modelsDir = os.path.join(os.getcwd(), 'inference', 'ml_model')
     return JsonResponse({'models': os.listdir(modelsDir)})
+
+
+@api_view(['POST'])
+def search(request):
+    query = json.loads(request.body)['query']
+    carRims = CarRimType.objects.filter(Q(category__icontains=query))
+    serializer = CarRimTypeSerializer(carRims, many=True)
+    
+    return Response(serializer.data)

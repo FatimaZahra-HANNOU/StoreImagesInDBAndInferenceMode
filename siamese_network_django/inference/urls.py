@@ -7,4 +7,5 @@ urlpatterns = [
     path("storedCarRimTypesByCategory/", views.storedCarRimTypesByCategory.as_view()),
     path("inference/", views.inference),
     path("models/", views.getModels),
+    path("search/", views.search)
 ]
