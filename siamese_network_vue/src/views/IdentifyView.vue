@@ -57,8 +57,23 @@
                 predictedImage: require('../assets/placeholder_image.jpg'),
                 uploadedImage: null,
                 predictedClass: null,
-                progress: 100,
+                progress: 0,
                 showProgressBar: false,
+            }
+        },
+        created() {
+            // const socket = new WebSocket(`ws://${window.location.host}/socket/`);
+            const socket = new WebSocket('ws://localhost:8000/socket/');
+
+            socket.onopen = () => {
+                socket.send(JSON.stringify({
+                    message: "Hello from the client"
+                }));
+            }
+
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                this.progress = data.progress;
             }
         },
         methods: {
