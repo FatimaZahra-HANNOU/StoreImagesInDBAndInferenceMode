@@ -37,9 +37,6 @@
                             <li v-for="model in models" :key="model">
                                 <a class="dropdown-item" @click="changeModelName(model)">{{ model }}</a>
                             </li>
-                            <!-- <li><a class="dropdown-item" @click="changeModelName('siamese_net')">siamese_net</a></li>
-                            <li><a class="dropdown-item" @click="changeModelName('Medium model v1')">Medium model v1</a></li>
-                            <li><a class="dropdown-item" @click="changeModelName('Large model v1')">Large model v1</a></li> -->
                         </ul>
                     </div>
                 </div>
