@@ -20,7 +20,7 @@ def predict(testImage, modelName):
     model = loadModel(modelPath)
     
     transform = transforms.Compose([
-        transforms.Resize((256, 256)),
+        transforms.Resize((180, 180)),
         transforms.Lambda(toGrayScale),
         transforms.ToTensor()
     ])
