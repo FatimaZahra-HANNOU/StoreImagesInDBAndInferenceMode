@@ -5,7 +5,7 @@
 
             <div v-if="showErrorMessage">
                 <div v-if="showErrorMessage" class="alert alert-danger" role="alert">
-                    <p  v-for="error in errors" :key="error" >- {{ error }}</p>
+                    <p class="card-text" v-for="error in errors" :key="error" >* {{ error }}</p>
                 </div>
             </div>
 
@@ -97,7 +97,6 @@
                 imageHeight: 300,
                 fitMode: 'cover',
                 
-
                 showErrorMessage: false,
                 errors: []
             }

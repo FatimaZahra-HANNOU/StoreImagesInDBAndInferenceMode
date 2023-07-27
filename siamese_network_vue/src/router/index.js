@@ -4,6 +4,8 @@ import HomeView from '../views/HomeView.vue'
 import GalleryView from '../views/GalleryView.vue'
 import IdentifyView from '../views/IdentifyView.vue'
 import ImageDetailsView from '../views/ImageDetailsView.vue'
+import ImageGroupDetailsView from '../views/ImageGroupDetailsView.vue'
+import AddCarRimToCategoryView from '../views/AddCarRimToCategoryView.vue'
 
 
 const routes = [
@@ -26,6 +28,16 @@ const routes = [
     path: '/imageDetails',
     name: 'imageDetails',
     component: ImageDetailsView
+  },
+  {
+    path: '/imageGroupDetails',
+    name: 'imageGroupDetails',
+    component: ImageGroupDetailsView
+  },
+  {
+    path: '/addCarRimToCategory',
+    name: 'addCarRimToCategory',
+    component: AddCarRimToCategoryView
   }
 ]
 

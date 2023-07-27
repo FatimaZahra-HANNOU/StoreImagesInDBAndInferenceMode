@@ -87,6 +87,33 @@ def search(request):
 
 
 @api_view(['POST'])
+def addCarRim(request):
+    image = getPilImage(request)
+    category = request.POST['category']
+    
+    imageMediaPath = getImageMediaPath(category)
+    saveImageToMedia(image, category)
+    
+    newCarRim = CarRimType.objects.create(category=category, image=imageMediaPath)
+    newCarRim.save()
+    
+    return JsonResponse({'message': 'The object was successfully created!'})
+
+
+def getImageMediaPath(category):
+    categoryPath = os.path.join(os.getcwd(), 'media', 'images', category)
+    numberOfImages = len(os.listdir(categoryPath)) + 1
+    return f"images/{category}/image_number_{numberOfImages}.jpg"
+
+
+def saveImageToMedia(image, category):
+    imageRelativePath = getImageMediaPath(category)
+    savePath = os.path.join(os.getcwd(), 'media', imageRelativePath)
+    
+    image.save(savePath)
+    
+
+@api_view(['POST'])
 def updateCarRim(request):
     updatedCarRim = json.loads(request.body)
     oldCarRim = CarRimType.objects.get(id=updatedCarRim['id'])
@@ -113,3 +140,12 @@ def deleteAssociatedImageFile(imageURL):
     pathToImage = os.path.join(os.getcwd(), mediaFolder, *imageURL.split(mediaFolder)[-1].split('/'))
     
     os.remove(pathToImage)
+    
+    
+@api_view(['POST'])
+def getCarRimTypeImages(request):
+    category = json.loads(request.body)['category']
+    carRims = CarRimType.objects.filter(Q(category=category))
+    serializer = CarRimTypeSerializer(carRims, many=True)
+    
+    return Response(serializer.data)
