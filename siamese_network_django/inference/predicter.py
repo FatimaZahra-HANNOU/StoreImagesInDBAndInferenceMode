@@ -53,7 +53,7 @@ def loadModel(path):
 def getTrainingdata(transform):
     trainingDirectory = os.path.join(os.getcwd(), 'media', 'images')
     trainingDataset = dset.ImageFolder(root=trainingDirectory, transform=transform)
-    return DataLoader(trainingDataset, batch_size=1, shuffle=False, num_workers=2, pin_memory=True)
+    return DataLoader(trainingDataset, batch_size=1, shuffle=False, num_workers=1, pin_memory=True)
 
 
 def sendProgressToVue(currentIteration, totalIterations):

@@ -19,6 +19,7 @@ import torchvision.transforms as transforms
 
 import os
 import json
+import time
 
 
 class storedCarRimTypes(APIView):
@@ -47,7 +48,9 @@ class storedCarRimTypesByCategory(APIView):
 def inference(request):
     image = getPilImage(request)
     modelName = request.POST['model']
+    startTime = time.time()
     predictedClass, predictedClassImage = predict(image, modelName)
+    print(f'Inference time: {(time.time() - startTime):.2f} seconds')
     
     return JsonResponse({
         'predictedClass': predictedClass + 1,
