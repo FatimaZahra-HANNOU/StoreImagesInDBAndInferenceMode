@@ -1,5 +1,5 @@
 <template>
-    <section class="container mx-auto" style="max-width: 700px;">
+    <section class="container mx-auto">
         <div class="mb-3">
             <h2 class="display-6 mt-5">Identify</h2>
 
@@ -22,12 +22,12 @@
             </div>
 
             <div class="row">
-                <div class="col-6">
+                <div class="col-4">
                     <label for="formFile" class="form-label mt-4">Upload your image.</label>
                     <input class="form-control" type="file" id="formFile" @change="handleFileUploaded">
                 </div>
 
-                <div class="col-6">
+                <div class="col-4">
                     <label for="modelSelector" class="form-label mt-4">Select your model.</label>
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -42,29 +42,41 @@
                 </div>
             </div>
 
-            <div class="my-4">
-                <div class="row">
-                    <div class="col-6">
-                        <InferenceImageBox
-                            :imageSrc="inputImage"
-                            :imageHeight="imageHeight"
-                            :fitMode="fitMode"
-                            :descriptionText="'Input image'"
-                        />
-                    </div>
+            <div class="row my-4">
+                <div class="col-4">
+                    <InferenceImageBox
+                        :imageSrc="inputImage"
+                        :imageHeight="imageHeight"
+                        :fitMode="fitModeInput"
+                        :descriptionText="'Input image'"
+                    />
+                </div>
 
-                    <div class="col-6">
-                        <InferenceImageBox
-                            :imageSrc="predictedImage"
-                            :imageHeight="imageHeight"
-                            :fitMode="fitMode"
-                            :descriptionText="'Predicted class - ' + predictedClass"
-                        />
-                    </div>
+                <div class="col-4">
+                    <InferenceImageBox
+                        :imageSrc="predictedImage"
+                        :imageHeight="imageHeight"
+                        :fitMode="fitModePrediction"
+                        :descriptionText="'Predicted class - ' + predictedClass"
+                    />
                 </div>
             </div>
 
             <button @click="sendImageToDjango" class="btn btn-primary">Identify</button>
+
+            <div class="row" v-if="topNPredictions.length">
+                <h2 class="display-6 mt-5 mb-4">Top 3 predictions</h2>
+
+                <div class="col-4" v-for="(prediction, index) in topNPredictions" :key="prediction">
+                    <InferenceImageBox
+                        :imageSrc="prediction[1]"
+                        :imageHeight="imageHeight"
+                        :fitMode="fitModePrediction"
+                        :descriptionText="'Predicion N° ' + (index+1) + ' | ' + prediction[0]"
+                    />
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -90,12 +102,14 @@
                 models: [],
 
                 predictedClass: '',
+                topNPredictions: [],
 
                 progress: 0,
                 showProgressBar: false,
 
-                imageHeight: 300,
-                fitMode: 'cover',
+                imageHeight: 350,
+                fitModeInput: 'scale-down',
+                fitModePrediction: 'scale-down',
                 
                 showErrorMessage: false,
                 errors: []
@@ -139,6 +153,7 @@
                     reader.readAsDataURL(file);
 
                     reader.onload = (event) => {
+                        this.fitModeInput = 'cover';
                         this.inputImage = event.target.result;
                         this.uploadedImage = event.target.result;
                     }
@@ -168,9 +183,12 @@
                     }
                 })
                 .then(response => {
+                    this.fitModePrediction = 'fill';
+
                     this.predictedClass = response.data.predictedClass;
                     this.predictedImage = response.data.predictedClassImage;
-                    
+                    this.topNPredictions = response.data.topNPredictions;
+
                     this.resetProgressBar();
                 })
                 .catch(error => {

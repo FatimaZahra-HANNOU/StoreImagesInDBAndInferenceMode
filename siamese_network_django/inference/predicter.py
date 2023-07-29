@@ -38,10 +38,22 @@ def predict(testImage, modelName):
             dissimilarities.append((euclidean_distance, trainCategory))
             sendProgressToVue(currentIteration=(i+1), totalIterations=len(trainingDataLoader))
 
-    
-    predictedClass = min(dissimilarities, key=lambda x: x[0])[1].item()
+    predictedClass = min(dissimilarities, key=lambda x: x[0])[1].item() + 1
     predictedClassImage = getPredictedClassImage(trainingDataLoader.dataset, predictedClass)
-    return predictedClass, predictedClassImage
+    topNPredictions = getTopNPredictions(trainingDataLoader, dissimilarities, 3)
+    
+    return predictedClass, predictedClassImage, topNPredictions
+
+
+def getTopNPredictions(dataLoader, dissimilarities, n):
+    sortedDissimilarities = sorted(dissimilarities, key=lambda x: x[0])[:n]
+    return [
+        (
+            category.item() + 1,
+            getPredictedClassImage(dataLoader.dataset, category.item()),
+        )
+        for _, category in sortedDissimilarities
+    ]
 
 
 def loadModel(path):

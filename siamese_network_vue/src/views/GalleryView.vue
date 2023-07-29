@@ -36,7 +36,6 @@
             </div>
         </div>
         
-
         <div class="my-2">
             <div class="row" v-show="displayImagesMode === ALL_MODE">
                 <div class="col-md-3 my-4" v-for="carRim in carRims" :key="carRim.id">
