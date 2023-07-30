@@ -49,6 +49,7 @@
                         :imageHeight="imageHeight"
                         :fitMode="fitModeInput"
                         :descriptionText="'Input image'"
+                        :footerBackgroundColor="'bg-transparent'"
                     />
                 </div>
 
@@ -58,6 +59,7 @@
                         :imageHeight="imageHeight"
                         :fitMode="fitModePrediction"
                         :descriptionText="'Predicted class - ' + predictedClass"
+                        :footerBackgroundColor="'bg-transparent'"
                     />
                 </div>
             </div>
@@ -73,6 +75,7 @@
                         :imageHeight="imageHeight"
                         :fitMode="fitModePrediction"
                         :descriptionText="'Predicion N° ' + (index+1) + ' | ' + prediction[0]"
+                        :footerBackgroundColor="topNCardBackgroundColor[index]"
                     />
                 </div>
             </div>
@@ -112,7 +115,9 @@
                 fitModePrediction: 'scale-down',
                 
                 showErrorMessage: false,
-                errors: []
+                errors: [],
+
+                topNCardBackgroundColor: ['bg-success', 'bg-warning', 'bg-danger']
             }
         },
         mounted() {
@@ -170,9 +175,9 @@
                 this.resetPredictedImage();
 
                 const formData = new FormData();
-                const imageURI = this.dataURItoBlob(this.uploadedImage)
+                const imageBlob = this.dataURItoBlob(this.uploadedImage)
 
-                formData.append('image', imageURI);
+                formData.append('image', imageBlob);
                 formData.append('model', this.modelName);
 
                 axios

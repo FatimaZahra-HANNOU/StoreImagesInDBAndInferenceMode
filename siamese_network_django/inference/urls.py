@@ -9,6 +9,7 @@ urlpatterns = [
     path("addCarRim/", views.addCarRim),
     path("updateCarRim/", views.updateCarRim),
     path("deleteCarRim/", views.deleteCarRim),
+    path("fillDataBase/", views.fillDataBase),
     path("storedCarRimTypes/", views.storedCarRimTypes.as_view()),
     path("getCarRimTypeImages/", views.getCarRimTypeImages),
     path("storedCarRimTypesByCategory/", views.storedCarRimTypesByCategory.as_view()),

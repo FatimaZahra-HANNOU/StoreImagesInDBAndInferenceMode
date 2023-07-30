@@ -107,9 +107,17 @@
                 }
             },
             async searchForCarRims() {
+                this.displayImagesMode = this.ALL_MODE;
+                
+                if (this.searchQuery === '') {
+                    this.getCarRims();
+                    return;
+                }
+                
                 const data = JSON.stringify({
                     query: this.searchQuery
                 });
+
                 await axios
                 .post('/api/v1/search/', data, {
                     headers: {

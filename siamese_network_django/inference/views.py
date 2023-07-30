@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.db.models import F, Q, Count, OuterRef, Subquery
 from django.db.models.functions import Coalesce
 
-from .models import CarRimType, CarRimTypeByCategory
+from .models import CarRimType
 from .serializers import CarRimTypeSerializer, CarRimTypeByCategorySerializer
 
 from rest_framework.views import APIView
@@ -17,8 +17,16 @@ from PIL import Image
 from .predicter import predict
 import torchvision.transforms as transforms
 
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
 import os
 import json
+import django
+
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'siamese_network_django.settings')
+django.setup()
 
 
 class storedCarRimTypes(APIView):
@@ -88,6 +96,42 @@ def search(request):
 
 
 @api_view(['POST'])
+def fillDataBase(request):
+    if request.method == 'POST':
+        imageFiles = request.FILES.getlist('images')
+        fileNames = request.POST.getlist('fileNames')
+        classNames = request.POST.getlist('classNames')
+        
+        for i, (imageFile, fileName, className) in enumerate(zip(imageFiles, fileNames, classNames)):
+            category = className.zfill(3)
+            imagePath = os.path.join('media', 'images', category, fileName)
+            
+            os.makedirs(os.path.dirname(imagePath), exist_ok=True)
+            pilImage = Image.open(io.BytesIO(imageFile.read()))
+            pilImage.save(imagePath)
+            
+            carRimType = CarRimType(category=category)
+            with open(imagePath, "rb") as file:
+                carRimType.image.save(fileName, file, save=True)
+                os.remove(imagePath)
+                
+            print(f"Added CarRimType: Category={category}, Image={fileName}")
+            sendProgressToVue(currentIteration=(i+1), totalIterations=len(imageFiles))
+            
+        return JsonResponse({'message': 'Images uploaded successfully.'})
+    
+
+def sendProgressToVue(currentIteration, totalIterations):
+    progressValue = int((currentIteration / totalIterations) * 100)
+    channel_layer = get_channel_layer()
+    
+    async_to_sync(channel_layer.group_send)("progress_bar", {
+        'type': 'send_progress',
+        'progress': progressValue,
+    })
+
+
+@api_view(['POST'])
 def addCarRim(request):
     image = getPilImage(request)
     category = request.POST['category']
@@ -123,6 +167,7 @@ def updateCarRim(request):
     oldCarRim.save()
     
     return JsonResponse({'message': 'The object was successfully updated!'})
+    return HTTp
 
 
 @api_view(['POST'])
